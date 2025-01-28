@@ -102,27 +102,27 @@ def LikeAva():
         if not ids in check_list:
             try:
                 # Информация о пользователе
-                INFO_USER= vk.method("users.get",{"user_ids":ids})
+                Info_User= vk.method("users.get",{"user_ids":ids})
                 
                 # Если открыт
-                if INFO_USER[0]['can_access_closed'] == True:
+                if Info_User[0]['can_access_closed'] == True:
                     # Последнее фото
-                    PG= vk.method("photos.get",{"owner_id":INFO_USER[0]['id'],"album_id":"profile","rev":"1"})
-                    ids_photo = (PG['items'][0]['id'])
+                    Photo_Get= vk.method("photos.get",{"owner_id":Info_User[0]['id'],"album_id":"profile","rev":"1"})
+                    ids_photo = (Photo_Get['items'][0]['id'])
                     
                     # Проверяет, находится ли объект в списке 'Мне нравится' у меня.
-                    LIL= vk.method("likes.isLiked",{"user_id":755728119,"type":"photo","owner_id":ids,"item_id":ids_photo})
+                    Likes_is_Liked= vk.method("likes.isLiked",{"user_id":755728119,"type":"photo","owner_id":ids,"item_id":ids_photo})
                     # Если нету то ...
-                    if LIL['liked'] == 0:
-                        LA= vk.method("likes.add",{"type":"photo","owner_id":ids,"item_id":ids_photo})
-                        logging.info(f"[##] Понравилось фото - {INFO_USER[0]['first_name']} {INFO_USER[0]['last_name']}")
+                    if Likes_is_Liked['liked'] == 0:
+                        Likes_Add= vk.method("likes.add",{"type":"photo","owner_id":ids,"item_id":ids_photo})
+                        logging.info(f"[##] Понравилось фото - {Info_User[0]['first_name']} {Info_User[0]['last_name']}")
                         panel_db.add_user(file_name, ids)
                         time.sleep(5)
                     else:
-                        logging.info(f"[##] Фото уже было отмечено - {INFO_USER[0]['first_name']} {INFO_USER[0]['last_name']}")
+                        logging.info(f"[##] Фото уже было отмечено - {Info_User[0]['first_name']} {Info_User[0]['last_name']}")
                         panel_db.add_user(file_name, ids)
                 else:
-                    logging.info(f"Страница закрыта - {INFO_USER[0]['first_name']} {INFO_USER[0]['last_name']}")
+                    logging.info(f"Страница закрыта - {Info_User[0]['first_name']} {Info_User[0]['last_name']}")
                     panel_db.add_user(file_name, ids)
             
             except Exception as error:
